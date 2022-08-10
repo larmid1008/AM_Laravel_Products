@@ -6,9 +6,9 @@ use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
 use Exception;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ProductController extends Controller
 {
@@ -23,7 +23,7 @@ class ProductController extends Controller
         foreach ($categories as $_ => $categoryId) {
             $category = Category::find($categoryId);
             if ($category == null) {
-                throw new Exception("Category with id ".$categoryId. " not exist");
+                throw new HttpException(Response::HTTP_BAD_REQUEST, "Category with id ".$categoryId. " not exist");
             }
         }
     }
@@ -33,7 +33,7 @@ class ProductController extends Controller
 
         if ($count < 2 || $count > 10)
         {
-            throw new Exception("Number of categories is limited from 2 to 10");
+            throw new HttpException(Response::HTTP_BAD_REQUEST, "Number of categories is limited from 2 to 10");
         }
     }
 

@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -49,12 +50,8 @@ class Handler extends ExceptionHandler
             //
         });
 
-        $this->renderable(function (Exception $e, $request) {
-            $code = $e->getCode();
-
-            if ($code === 0) {
-                $code = Response::HTTP_INTERNAL_SERVER_ERROR;
-            }
+        $this->renderable(function (HttpException $e, $request) {
+            $code = $e->getStatusCode();
 
             return response()->json([
                 'error' => $e->getMessage(),
