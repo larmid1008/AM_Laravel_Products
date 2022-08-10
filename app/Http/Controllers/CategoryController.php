@@ -36,7 +36,6 @@ class CategoryController extends Controller
         $category = Category::findOrFail($categoryId);
 
         if (!$category->products->isEmpty()) {
-            // Throw Not Empty Category Exception
             throw new HttpException(Response::HTTP_BAD_REQUEST, "Category attached to products");
         }
 
