@@ -2,19 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\Product\ProductCategoryFilter;
+use App\Filters\Product\ProductNameFilter;
+use App\Filters\Product\ProductNotDeletedFilter;
+use App\Filters\Product\ProductPriceFilter;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = QueryBuilder::for(Product::class)
+            ->allowedFilters([
+                AllowedFilter::exact('id'),
+                AllowedFilter::custom('name', new ProductNameFilter()),
+                AllowedFilter::custom('category', new ProductCategoryFilter() ),
+                AllowedFilter::custom('price', new ProductPriceFilter()),
+                AllowedFilter::custom('notDeleted', new ProductNotDeletedFilter()), // These are requirements but I would do 'withDeleted', because, in most situations, products without deleted status will be needed and not vice versa
+                AllowedFilter::exact('published'),
+            ])->withTrashed()->get();
         return ProductResource::collection($products);
     }
 
