@@ -10,7 +10,7 @@ class Category extends Model
     /**
      * @var string
      */
-    protected $table = 'products';
+    protected $table = 'categories';
 
     /**
      * @var array
