@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,12 +16,21 @@ class CategoryController extends Controller
         return Category::all();
     }
 
-    public function store(Request $request): JsonResponse
+    /**
+     * @param Request $request
+     * @return CategoryResource
+     */
+    public function store(Request $request): CategoryResource
     {
-        return response()->json(Category::create(['name' => $request->name]), Response::HTTP_CREATED);
+        $category = Category::create(['name' => $request->name]);
+        return CategoryResource::make($category);
     }
 
-    public function delete(int $categoryId): JsonResponse
+    /**
+     * @param int $categoryId
+     * @return CategoryResource
+     */
+    public function destroy(int $categoryId): CategoryResource
     {
         $category = Category::findOrFail($categoryId);
 
@@ -30,7 +40,7 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        return CategoryResource::make($category);
     }
 
 }
