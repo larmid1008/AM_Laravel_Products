@@ -17,6 +17,8 @@ class Category extends Model
      */
     protected $fillable = ['name'];
 
+    public $timestamps = false;
+
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);

@@ -25,6 +25,8 @@ class Product extends Model
      */
     protected $dates = ['deleted_at'];
 
+    public $timestamps = false;
+
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
